@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { fallback, filterProjects, tagCounts } from "../fallback";
 import { apiGet } from "./client";
 import type { Experience, ProjectDetail, ProjectList, Skill, Tag } from "./types";
@@ -71,15 +72,31 @@ export function useProject(slug: string, enabled: boolean): Cached<ProjectDetail
   return { data: q.data, source: q.dataUpdatedAt > 0 ? "live" : "cached" };
 }
 
-/** Polls /healthz every 30 s. */
+/**
+ * Polls /healthz every 30 s. When the API turns reachable (e.g. a free-tier server has
+ * woken up), every on-screen query still showing the bundled copy asks again, so the
+ * page switches to live data without a reload.
+ */
 export function useApiStatus(): "online" | "offline" | "checking" {
+  const client = useQueryClient();
   const q = useQuery({
     queryKey: ["healthz"],
     queryFn: () => apiGet<{ status: string }>("/healthz"),
     refetchInterval: 30_000,
     retry: false,
   });
-  if (q.isSuccess) return "online";
-  if (q.isError) return "offline";
-  return "checking";
+  const status = q.isSuccess ? "online" : q.isError ? "offline" : "checking";
+
+  useEffect(() => {
+    if (status !== "online") return;
+    void client.refetchQueries(
+      {
+        type: "active",
+        predicate: (query) => query.queryKey[0] !== "healthz" && query.state.dataUpdatedAt === 0,
+      },
+      { cancelRefetch: false }, // join a request already in flight instead of restarting it
+    );
+  }, [status, client]);
+
+  return status;
 }

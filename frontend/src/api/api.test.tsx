@@ -1,4 +1,4 @@
-import { waitFor } from "@testing-library/react";
+import { act, waitFor } from "@testing-library/react";
 import { fallback } from "../fallback";
 import { renderHookWithQuery } from "../test/render";
 import { apiGet } from "./client";
@@ -22,6 +22,27 @@ it("keeps cached data and reports offline when the API is down", async () => {
   await waitFor(() => expect(result.current.s).toBe("offline"));
   expect(result.current.p.source).toBe("cached");
   expect(result.current.p.data.rows.length).toBeGreaterThan(0);
+});
+
+it("swaps in live data once the API wakes up, without a reload", async () => {
+  const live = { rows: [{ ...fallback.projects[0], name: "Live name" }], count: 1, elapsed_ms: 3.2 };
+  let up = false;
+  const fetchMock = vi.fn(async (url: string | URL) => {
+    if (!up) throw new TypeError("Failed to fetch");
+    const body = String(url).includes("/healthz") ? { status: "ok", db: "ok" } : live;
+    return new Response(JSON.stringify(body), { status: 200 });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  const { result, client } = renderHookWithQuery(() => ({ p: useProjects([]), s: useApiStatus() }));
+  await waitFor(() => expect(result.current.s).toBe("offline"));
+  await waitFor(() => expect(client.getQueryState(["projects", []])?.status).toBe("error"));
+
+  up = true; // the API has woken up; the next 30 s health poll sees it
+  await act(() => client.refetchQueries({ queryKey: ["healthz"] }));
+
+  await waitFor(() => expect(result.current.s).toBe("online"));
+  await waitFor(() => expect(result.current.p.source).toBe("live"));
+  expect(result.current.p.data.rows[0].name).toBe("Live name");
 });
 
 it("sends repeated tag params and surfaces the envelope code", async () => {

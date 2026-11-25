@@ -11,6 +11,8 @@ export function AsciiHero() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [samples, setSamples] = useState(() => (deviceTier() === "low" ? { u: 400, v: 20 } : { u: 640, v: 30 }));
+  // Kept outside the effect so a quality change does not snap the knot back to its start.
+  const angles = useRef({ a: 0.6, b: 0 });
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -25,8 +27,7 @@ export function AsciiHero() {
     let rows = 1;
     let cellW = 6.6;
     let cellH = 12;
-    let angleA = 0.6;
-    let angleB = 0;
+    const angle = angles.current;
     let drag: { x: number; y: number; a: number; b: number } | null = null;
 
     const resize = () => {
@@ -46,7 +47,7 @@ export function AsciiHero() {
     };
 
     const draw = () => {
-      const frame = renderFrame(knot, angleA, angleB, cols, rows, cellH / cellW);
+      const frame = renderFrame(knot, angle.a, angle.b, cols, rows, cellH / cellW);
       ctx.clearRect(0, 0, width, height);
       ctx.fillStyle = INK;
       frame.text.forEach((row, i) => ctx.fillText(row, 0, i * cellH));
@@ -77,8 +78,8 @@ export function AsciiHero() {
       raf = 0;
       if (!visible) return;
       if (!drag) {
-        angleA += 0.011;
-        angleB += 0.006;
+        angle.a += 0.011;
+        angle.b += 0.006;
       }
       draw();
       watchdog.tick(now);
@@ -95,13 +96,13 @@ export function AsciiHero() {
     intersection?.observe(wrap);
 
     const onDown = (e: PointerEvent) => {
-      drag = { x: e.clientX, y: e.clientY, a: angleA, b: angleB };
+      drag = { x: e.clientX, y: e.clientY, a: angle.a, b: angle.b };
       wrap.setPointerCapture?.(e.pointerId);
     };
     const onMove = (e: PointerEvent) => {
       if (!drag) return;
-      angleB = drag.b + (e.clientX - drag.x) * 0.01;
-      angleA = drag.a + (e.clientY - drag.y) * 0.01;
+      angle.b = drag.b + (e.clientX - drag.x) * 0.01;
+      angle.a = drag.a + (e.clientY - drag.y) * 0.01;
     };
     const onUp = () => {
       drag = null;

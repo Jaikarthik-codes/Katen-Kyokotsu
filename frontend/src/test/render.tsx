@@ -5,15 +5,18 @@ import type { ReactNode } from "react";
 /** A fresh client per test, no retries, so failures show up immediately. */
 function makeWrapper() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return ({ children }: { children: ReactNode }) => (
+  const wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={client}>{children}</QueryClientProvider>
   );
+  return { client, wrapper };
 }
 
 export function renderWithQuery(ui: ReactNode) {
-  return render(ui, { wrapper: makeWrapper() });
+  const { client, wrapper } = makeWrapper();
+  return { ...render(ui, { wrapper }), client };
 }
 
 export function renderHookWithQuery<T>(hook: () => T) {
-  return renderHook(hook, { wrapper: makeWrapper() });
+  const { client, wrapper } = makeWrapper();
+  return { ...renderHook(hook, { wrapper }), client };
 }
