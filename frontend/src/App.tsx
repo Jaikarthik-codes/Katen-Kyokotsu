@@ -1,5 +1,6 @@
 import { Header } from "./components/Header";
 import { fallback } from "./fallback";
+import { AsciiHero } from "./hero/AsciiHero";
 import { Contact } from "./sections/Contact";
 import { History } from "./sections/History";
 import { Projects } from "./sections/Projects";
@@ -17,7 +18,7 @@ export function App() {
       </a>
       <Header />
       <main id="main" className="px-[max(5vw,16px)]">
-        <Whoami />
+        <Whoami art={<AsciiHero />} />
         <Projects />
         <Skills />
         <History />
