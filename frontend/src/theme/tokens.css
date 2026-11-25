@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* Design tokens: the "printed terminal" palette. No gradients, no shadows. */
+@theme {
+  --color-paper: #ece6d8;
+  --color-ink: #141414;
+  --color-signal: #d4361b;
+  --color-muted: #5b574f;
+  --color-rule: #c9c1b0;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    line-height: 1.6;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    overflow-x: clip;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
