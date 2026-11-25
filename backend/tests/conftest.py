@@ -10,7 +10,8 @@ from app.config import Settings
 from app.db import make_engine
 from app.main import create_app
 from app.models import Base
-from tests.helpers import TEST_DATABASE_URL, make_client
+from app.seed import SeedReport, load_seed
+from tests.helpers import FIXTURE_DIR, TEST_DATABASE_URL, make_client
 
 
 @pytest.fixture(scope="session")
@@ -67,3 +68,9 @@ async def tmp_database_url(settings: Settings) -> AsyncIterator[str]:
 async def client(settings: Settings) -> AsyncIterator[httpx.AsyncClient]:
     async with make_client(create_app(settings)) as c:
         yield c
+
+
+@pytest.fixture
+async def seeded(db_session: AsyncSession) -> SeedReport:
+    """Load the small test fixture content (3 projects, 4 skills, 2 experience rows)."""
+    return await load_seed(db_session, FIXTURE_DIR)
