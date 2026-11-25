@@ -33,3 +33,18 @@ class ProjectList(BaseModel):
 class TagOut(BaseModel):
     label: str
     count: int
+
+
+class SkillOut(_FromOrm):
+    name: str
+    category: str
+    years: float | None
+
+
+class ExperienceOut(_FromOrm):
+    kind: Literal["education", "work", "training"]
+    org: str
+    title: str
+    start: date
+    end: date | None
+    highlights: list[str]
