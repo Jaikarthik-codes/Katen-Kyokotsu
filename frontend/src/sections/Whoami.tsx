@@ -7,8 +7,8 @@ export function Whoami({ art }: { art?: ReactNode }) {
   return (
     <Section id="whoami" command="whoami">
       <div className={art ? "grid items-center gap-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" : "grid gap-8"}>
-        <div>
-          <h1 className="text-[clamp(44px,7vw,96px)] font-extrabold leading-none tracking-tight [overflow-wrap:anywhere]">
+        <div className="@container">
+          <h1 className="text-[clamp(36px,11cqi,96px)] font-extrabold leading-none tracking-tight [overflow-wrap:anywhere]">
             {profile.name}
           </h1>
           <p className="mt-5 text-xl font-semibold">{profile.headline}</p>
