@@ -25,7 +25,7 @@ export function ProjectCard({ project }: { project: Project }) {
     <article className="flex flex-col gap-3 border-2 border-ink p-5 [overflow-wrap:anywhere]">
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-xl font-extrabold leading-tight">
-          <span className="text-muted" aria-hidden="true">
+          <span className="text-muted plain:hidden" aria-hidden="true">
             ├─{" "}
           </span>
           {project.name}

@@ -22,7 +22,7 @@ export function Projects() {
       <p className="mb-6 text-sm text-muted" aria-live="polite">
         ({data.count} rows) · {source === "live" ? `${data.elapsed_ms} ms` : "offline copy"}
       </p>
-      <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">
+      <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))] plain:grid-cols-1">
         {data.rows.map((p) => (
           <ProjectCard key={p.slug} project={p} />
         ))}

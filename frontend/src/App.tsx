@@ -1,6 +1,7 @@
 import { Header } from "./components/Header";
 import { fallback } from "./fallback";
 import { AsciiHero } from "./hero/AsciiHero";
+import { usePlainView } from "./lib/plainView";
 import { Contact } from "./sections/Contact";
 import { History } from "./sections/History";
 import { Projects } from "./sections/Projects";
@@ -8,6 +9,7 @@ import { Skills } from "./sections/Skills";
 import { Whoami } from "./sections/Whoami";
 
 export function App() {
+  const [plain, togglePlain] = usePlainView();
   return (
     <>
       <a
@@ -16,9 +18,20 @@ export function App() {
       >
         Skip to content
       </a>
-      <Header />
+      <Header
+        actions={
+          <button
+            type="button"
+            aria-pressed={plain}
+            onClick={togglePlain}
+            className="border-2 border-ink px-3 py-1 text-sm aria-pressed:bg-ink aria-pressed:text-paper"
+          >
+            Plain view
+          </button>
+        }
+      />
       <main id="main" className="px-[max(5vw,16px)]">
-        <Whoami art={<AsciiHero />} />
+        <Whoami art={plain ? undefined : <AsciiHero />} />
         <Projects />
         <Skills />
         <History />

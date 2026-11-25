@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* `plain:` utilities apply when the visitor turns on Plain view (html[data-view=plain]). */
+@custom-variant plain (&:where([data-view="plain"], [data-view="plain"] *));
+
 /* Design tokens: the "printed terminal" palette. No gradients, no shadows. */
 @theme {
   --color-paper: #ece6d8;
@@ -31,5 +34,24 @@
   ::selection {
     background: var(--color-ink);
     color: var(--color-paper);
+  }
+}
+
+/* Plain view: no motion at all, quieter decoration, one column. */
+@layer base {
+  [data-view="plain"] *,
+  [data-view="plain"] *::before,
+  [data-view="plain"] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
   }
 }

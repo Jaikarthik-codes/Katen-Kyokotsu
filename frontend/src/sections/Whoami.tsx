@@ -6,7 +6,7 @@ export function Whoami({ art }: { art?: ReactNode }) {
   const { profile } = fallback;
   return (
     <Section id="whoami" command="whoami">
-      <div className="grid items-center gap-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <div className={art ? "grid items-center gap-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" : "grid gap-8"}>
         <div>
           <h1 className="text-[clamp(44px,7vw,96px)] font-extrabold leading-none tracking-tight [overflow-wrap:anywhere]">
             {profile.name}
