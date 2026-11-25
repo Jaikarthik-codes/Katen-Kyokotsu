@@ -1,0 +1,11 @@
+- kind: education
+  org: Test University
+  title: B.Tech
+  start: 2022-08-01
+  end: 2026-05-31
+  highlights: [Final-year project on APIs]
+- kind: training
+  org: Test Bootcamp
+  title: Backend course
+  start: 2025-01-10
+  highlights: []

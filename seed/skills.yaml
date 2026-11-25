@@ -1,0 +1,7 @@
+# Skills shown on the site. years: leave null unless you can back the number up.
+- {name: Python, category: Languages, sort_order: 1, years: null}
+- {name: SQL, category: Languages, sort_order: 2, years: null}
+- {name: FastAPI, category: Frameworks, sort_order: 1, years: null}
+- {name: PostgreSQL, category: Databases, sort_order: 1, years: null}
+- {name: Git, category: Tools, sort_order: 1, years: null}
+- {name: Docker, category: Tools, sort_order: 2, years: null}

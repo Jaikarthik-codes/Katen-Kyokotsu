@@ -1,0 +1,7 @@
+# Education, work and training. kind: education | work | training.
+- kind: education
+  org: College name (placeholder)
+  title: B.Tech
+  start: 2022-08-01
+  end: 2026-05-31
+  highlights: ["Placeholder: add your branch and final-year project."]

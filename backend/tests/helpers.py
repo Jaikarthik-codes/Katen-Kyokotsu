@@ -3,6 +3,7 @@
 import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI
@@ -26,3 +27,6 @@ async def make_client(
         engine = getattr(app.state, "engine", None)
         if engine is not None:
             await engine.dispose()
+
+
+FIXTURE_DIR = Path(__file__).parent / "seed_fixture"

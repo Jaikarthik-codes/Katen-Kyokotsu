@@ -1,0 +1,21 @@
+- slug: alpha
+  name: Alpha
+  summary: Old
+  stack: [FastAPI, PostgreSQL]
+  status: live
+  featured: true
+  sort_order: 1
+  started_on: 2025-06-01
+- slug: beta
+  name: Beta
+  summary: Beta project
+  stack: [FastAPI, React]
+  status: wip
+  sort_order: 2
+  started_on: 2025-09-01
+- slug: gamma
+  name: Gamma
+  summary: Gamma project
+  stack: [Python]
+  status: archived
+  sort_order: 3

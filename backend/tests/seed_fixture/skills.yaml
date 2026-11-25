@@ -1,0 +1,4 @@
+- {name: Python, category: Languages, sort_order: 1}
+- {name: SQL, category: Languages, sort_order: 2}
+- {name: FastAPI, category: Frameworks, sort_order: 1}
+- {name: PostgreSQL, category: Databases, sort_order: 1}

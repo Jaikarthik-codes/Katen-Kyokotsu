@@ -1,0 +1,22 @@
+# Portfolio projects. Loaded by: cd backend && uv run python -m app.seed
+# status: live | wip | archived. Entries marked "Placeholder" must be replaced before deploying.
+- slug: portfolio
+  name: This portfolio
+  summary: ASCII-3D portfolio with an agent-build intro. React front end, FastAPI and PostgreSQL behind it.
+  stack: [React, TypeScript, FastAPI, PostgreSQL]
+  status: wip
+  featured: true
+  sort_order: 1
+  started_on: 2026-11-25
+- slug: final-year-project
+  name: Final-year project
+  summary: "Placeholder: replace with the real project details."
+  stack: [Python]
+  status: wip
+  sort_order: 2
+- slug: mini-project
+  name: Mini project
+  summary: "Placeholder: replace with the real project details."
+  stack: [Python]
+  status: wip
+  sort_order: 3
