@@ -7,6 +7,11 @@
     "node": ">=22"
   },
   "scripts": {
+    "fallback": "node scripts/build-fallback.mjs",
+    "predev": "npm run fallback",
+    "prebuild": "npm run fallback",
+    "pretest": "npm run fallback",
+    "precheck": "npm run fallback",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",

@@ -1,0 +1,9 @@
+# Who you are. Bundled into the frontend at build time (no API needed).
+# Entries marked "placeholder" must be replaced before deploying.
+name: "Your Name (placeholder)"
+headline: Backend engineer
+intro: I build the APIs, databases and AI features behind fast, reliable apps, with Python, FastAPI and PostgreSQL.
+email: you@example.com
+github: null
+linkedin: null
+resume_url: null
