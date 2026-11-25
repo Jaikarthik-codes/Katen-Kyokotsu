@@ -15,12 +15,18 @@ router = APIRouter(tags=["contact"])
 Session = Annotated[AsyncSession, Depends(get_session)]
 
 
-def client_ip(request: Request, trust_proxy: bool) -> str:
-    """Visitor IP. X-Forwarded-For is only trusted behind a known proxy (it is easy to fake)."""
+def client_ip(request: Request, trust_proxy: bool, hops: int = 1) -> str:
+    """Visitor IP.
+
+    X-Forwarded-For is only trusted behind a known proxy. Each trusted proxy appends
+    the address it saw on the right, so the real client is `hops` entries from the
+    right. Everything further left was written by the client and can be faked.
+    """
     if trust_proxy:
-        first = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
-        if first:
-            return first
+        parts = [p.strip() for p in request.headers.get("x-forwarded-for", "").split(",")]
+        parts = [p for p in parts if p]
+        if len(parts) >= hops:
+            return parts[-hops]
     return request.client.host if request.client else "unknown"
 
 
@@ -36,7 +42,8 @@ async def send_message(body: ContactIn, request: Request, session: Session) -> C
         # Pretend success so bots learn nothing, but store nothing.
         return ContactAccepted(status="received")
 
-    ip_hash = hash_ip(client_ip(request, settings.trust_proxy_headers), settings.ip_hash_salt)
+    ip = client_ip(request, settings.trust_proxy_headers, settings.trusted_proxy_hops)
+    ip_hash = hash_ip(ip, settings.ip_hash_salt)
     async with session.begin():
         # Serialize requests from the same visitor so two at once can't both pass the limit.
         await session.execute(select(func.pg_advisory_xact_lock(func.hashtext(ip_hash))))

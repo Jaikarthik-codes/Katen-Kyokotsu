@@ -80,7 +80,8 @@ async def test_unicode_and_html_stored_verbatim(client, db_session):
 
 
 async def test_forwarded_for_ignored_unless_trusted(settings, db_session):
-    headers = {"X-Forwarded-For": "203.0.113.9, 10.0.0.1"}
+    # The proxy appends the real client IP on the right; the left part is whatever the client sent.
+    headers = {"X-Forwarded-For": "198.51.100.7, 203.0.113.9"}
     for trust, expected_ip in [(False, "127.0.0.1"), (True, "203.0.113.9")]:
         app = create_app(settings.model_copy(update={"trust_proxy_headers": trust}))
         async with make_client(app) as c:
@@ -89,6 +90,28 @@ async def test_forwarded_for_ignored_unless_trusted(settings, db_session):
         newest = select(ContactMessage).order_by(ContactMessage.id.desc()).limit(1)
         row = (await db_session.execute(newest)).scalar_one()
         assert row.ip_hash == hash_ip(expected_ip, "test-salt")
+
+
+async def test_rotating_spoofed_forwarded_for_cannot_bypass_limit(settings):
+    app = create_app(settings.model_copy(update={"trust_proxy_headers": True}))
+    async with make_client(app) as c:
+        codes = [
+            (
+                await c.post(
+                    "/api/v1/contact",
+                    json=VALID,
+                    headers={"X-Forwarded-For": f"198.51.100.{i}, 203.0.113.9"},
+                )
+            ).status_code
+            for i in range(6)
+        ]
+    assert codes == [202] * 5 + [429]
+
+
+async def test_nul_byte_in_contact_is_422(client, db_session):
+    r = await client.post("/api/v1/contact", json={**VALID, "message": "Hello\x00 there, friend"})
+    assert r.status_code == 422 and r.json()["error"]["code"] == "validation_error"
+    assert await contact_count(db_session) == 0
 
 
 async def test_contact_db_down_is_503(settings):

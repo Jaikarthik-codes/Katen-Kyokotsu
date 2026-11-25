@@ -46,3 +46,8 @@ async def test_empty_database(client):
     assert (await client.get("/api/v1/projects")).json()["rows"] == []
     assert (await client.get("/api/v1/tags")).json() == []
     assert (await client.get("/api/v1/projects", params={"tag": "FastAPI"})).status_code == 422
+
+
+async def test_nul_byte_in_slug_is_404(client, seeded):
+    r = await client.get("/api/v1/projects/a%00b")
+    assert r.status_code == 404 and r.json()["error"]["code"] == "not_found"

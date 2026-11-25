@@ -16,7 +16,7 @@ from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select, tuple_
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -68,11 +68,24 @@ class SeedReport:
     experience: int
 
 
-def _read[T: BaseModel](seed_dir: Path, filename: str, model: type[T]) -> list[T]:
-    """Validate every record before anything is written. A missing file means no records."""
+SEED_FILES = ("projects.yaml", "skills.yaml", "experience.yaml")
+
+
+def _require_seed_files(seed_dir: Path) -> None:
+    """Fail loudly instead of 'successfully' loading nothing from a wrong path."""
+    if not seed_dir.is_dir() or not any((seed_dir / f).exists() for f in SEED_FILES):
+        raise FileNotFoundError(f"no seed files ({', '.join(SEED_FILES)}) in {seed_dir}")
+
+
+def _read[T: BaseModel](seed_dir: Path, filename: str, model: type[T]) -> list[T] | None:
+    """Validate every record before anything is written.
+
+    Returns None when the file is absent (leave that table alone) and a list
+    (possibly empty) when it exists (the table is synced to exactly that list).
+    """
     path = seed_dir / filename
     if not path.exists():
-        return []
+        return None
     raw = yaml.safe_load(path.read_text()) or []
     try:
         return [model.model_validate(item) for item in raw]
@@ -91,16 +104,31 @@ def _upsert(model, rows: list[BaseModel], **conflict):
 
 
 async def load_seed(session: AsyncSession, seed_dir: Path) -> SeedReport:
+    """Sync each table whose YAML file exists to exactly that file's records."""
+    _require_seed_files(seed_dir)
+
     projects = _read(seed_dir, "projects.yaml", ProjectSeed)
     skills = _read(seed_dir, "skills.yaml", SkillSeed)
     experience = _read(seed_dir, "experience.yaml", ExperienceSeed)
 
-    if projects:
-        await session.execute(_upsert(Project, projects, index_elements=["slug"]))
-    if skills:
-        await session.execute(_upsert(Skill, skills, index_elements=["name"]))
-    if experience:
-        await session.execute(_upsert(Experience, experience, constraint="uq_experience_natural"))
+    if projects is not None:
+        if projects:
+            await session.execute(_upsert(Project, projects, index_elements=["slug"]))
+        await session.execute(
+            delete(Project).where(Project.slug.not_in([p.slug for p in projects]))
+        )
+    if skills is not None:
+        if skills:
+            await session.execute(_upsert(Skill, skills, index_elements=["name"]))
+        await session.execute(delete(Skill).where(Skill.name.not_in([s.name for s in skills])))
+    if experience is not None:
+        if experience:
+            await session.execute(
+                _upsert(Experience, experience, constraint="uq_experience_natural")
+            )
+        natural_key = tuple_(Experience.kind, Experience.org, Experience.title, Experience.start)
+        keep = [(e.kind, e.org, e.title, e.start) for e in experience]
+        await session.execute(delete(Experience).where(natural_key.not_in(keep)))
     await session.commit()
 
     async def count(model) -> int:

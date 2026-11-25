@@ -65,6 +65,8 @@ async def list_projects(
 
 @router.get("/projects/{slug}", response_model=ProjectDetail)
 async def get_project(slug: str, session: Session) -> ProjectDetail:
+    if "\x00" in slug:  # cannot exist in PostgreSQL text; don't send it to the database
+        raise ApiError(404, "not_found", "Project not found", [{"slug": slug}])
     project = (
         await session.execute(select(Project).where(Project.slug == slug))
     ).scalar_one_or_none()

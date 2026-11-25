@@ -14,7 +14,7 @@ cp .env.example .env             # then edit IP_HASH_SALT
 docker compose up -d db          # from the repo root: starts PostgreSQL on :5432
 
 uv run alembic upgrade head      # create the tables
-uv run python -m app.seed        # load ../seed/*.yaml (safe to run again)
+uv run python -m app.seed        # sync the database to ../seed/*.yaml (safe to run again)
 uv run uvicorn app.main:create_app --factory --reload --port 8000
 ```
 
@@ -32,6 +32,7 @@ All settings come from environment variables. See `.env.example`.
 | `CORS_ORIGINS` | JSON list of browser origins allowed to call the API |
 | `IP_HASH_SALT` | Secret used to hash visitor IPs. Raw IPs are never stored |
 | `TRUST_PROXY_HEADERS` | `true` only behind a proxy that sets `X-Forwarded-For` |
+| `TRUSTED_PROXY_HOPS` | Number of trusted proxies in front of the app (default 1). The client IP is taken this many entries from the right of `X-Forwarded-For` |
 | `CONTACT_LIMIT_PER_HOUR` | Contact messages allowed per visitor per hour (default 5) |
 
 ## Endpoints
@@ -78,10 +79,20 @@ Every error (except `/healthz`) has one shape:
 
 - **Honeypot.** The real form hides a `website` field. Humans leave it empty; bots fill it in. A filled-in honeypot still gets a normal 202, so the bot learns nothing, but nothing is stored.
 - **Rate limit.** Each visitor can send 5 messages per hour. The visitor is identified by `sha256(IP_HASH_SALT + ip)`, so raw IPs never reach the database. A per-visitor database lock stops two simultaneous requests from both slipping past the limit.
+- **Real client IP behind a proxy.** With `TRUST_PROXY_HEADERS=true`, the IP is taken `TRUSTED_PROXY_HOPS` entries from the *right* of `X-Forwarded-For`, because that is the part your own proxy wrote. The leftmost entries come from the client and can be faked to dodge the limit.
 - **Validation.**
+  - NUL characters are rejected with a 422, because PostgreSQL text cannot store them.
   - `name` must be 1–100 characters and `message` 10–2,000 characters, both after trimming.
   - `email` must be a real email address.
   - Text is stored exactly as sent and only ever returned as JSON.
+
+## Seed content
+
+`python -m app.seed` makes the database match the YAML files in `seed/`:
+- A row is added or updated for every record in a file.
+- A row is **deleted** when its record is removed from the file, so replaced placeholders disappear.
+- When a file is absent, its table is left alone.
+- When the folder is missing or has none of the three files, the command fails instead of quietly loading nothing.
 
 ## Tests
 

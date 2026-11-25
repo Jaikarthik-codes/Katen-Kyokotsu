@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class _FromOrm(BaseModel):
@@ -58,6 +58,14 @@ class ContactIn(BaseModel):
     message: str = Field(min_length=10, max_length=2000)
     # Honeypot: hidden in the real form, so only bots fill it in.
     website: str = Field(default="", max_length=300)
+
+    @field_validator("name", "message")
+    @classmethod
+    def no_nul_bytes(cls, v: str) -> str:
+        # PostgreSQL text cannot store NUL; reject it here as bad input, not a database error.
+        if "\x00" in v:
+            raise ValueError("must not contain NUL characters")
+        return v
 
 
 class ContactAccepted(BaseModel):

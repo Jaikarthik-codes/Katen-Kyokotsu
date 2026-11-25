@@ -47,3 +47,43 @@ async def test_seed_rejects_bad_status(db_session, tmp_path):
     )
     with pytest.raises(ValueError, match="status"):
         await load_seed(db_session, tmp_path)
+
+
+GAMMA = """- slug: gamma
+  name: Gamma
+  summary: Gamma project
+  stack: [Python]
+  status: archived
+  sort_order: 3
+"""
+
+
+async def test_seed_missing_directory_fails_loudly(db_session, tmp_path):
+    with pytest.raises(FileNotFoundError):
+        await load_seed(db_session, tmp_path / "nope")
+
+
+async def test_seed_directory_without_seed_files_fails_loudly(db_session, tmp_path):
+    with pytest.raises(FileNotFoundError):
+        await load_seed(db_session, tmp_path)
+
+
+async def test_seed_removes_rows_missing_from_yaml(db_session, tmp_path):
+    await load_seed(db_session, FIXTURE_DIR)
+    copy_fixture(tmp_path, edit={"projects.yaml": (GAMMA, "")})
+    report = await load_seed(db_session, tmp_path)
+    assert report.projects == 2
+
+
+async def test_seed_key_change_replaces_row_instead_of_duplicating(db_session, tmp_path):
+    await load_seed(db_session, FIXTURE_DIR)
+    copy_fixture(tmp_path, edit={"experience.yaml": ("start: 2025-01-10", "start: 2025-01-11")})
+    report = await load_seed(db_session, tmp_path)
+    assert report.experience == 2
+
+
+async def test_seed_leaves_tables_alone_when_their_file_is_absent(db_session, tmp_path):
+    await load_seed(db_session, FIXTURE_DIR)
+    (tmp_path / "projects.yaml").write_text((FIXTURE_DIR / "projects.yaml").read_text())
+    report = await load_seed(db_session, tmp_path)
+    assert report == SeedReport(projects=3, skills=4, experience=2)

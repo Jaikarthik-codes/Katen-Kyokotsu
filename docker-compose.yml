@@ -24,6 +24,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      # Content lives in the repo's seed/ folder: `docker compose exec api python -m app.seed`
+      - ./seed:/seed:ro
     ports:
       - "8000:8000"
 
