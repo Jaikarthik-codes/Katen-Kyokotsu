@@ -1,4 +1,4 @@
-# Plan: anime/manga-style portfolio with an agent-build intro
+# Design: ASCII-3D portfolio with an agent-build intro
 
 ## Context
 
@@ -10,9 +10,8 @@ They studied project.fahimweb.online with REA (findings: `reports/Portfolio site
 
 **Decisions from the user**
 - **Audience:** recruiters for backend + AI roles. After the intro they should open projects / GitHub and download the resume.
-- **Visual world:** **original anime/manga energy**, inspired by anime openings and fight scenes, plus award-winning creative websites.
-  - The final look is chosen from **3 live animated mockups** (Milestone 0).
-  - No Bleach, Spider-Man or other copyrighted characters, names or logos. All art and characters are our own.
+- **Visual world:** **ASCII 3D** (style 18), chosen on 2026-11-25 after reviewing 25 live mockups (3 anime, then galleries 1–3).
+  - All art is our own. No copyrighted characters, names or logos.
 - **Intro fidelity:** **same mechanic, our style.** Behaviour and pacing match the reference; the cursors, HUD and colours are restyled to the chosen theme.
 - **Architecture:** **React SPA + separate FastAPI API** (user's choice).
 - **Backend:** FastAPI + PostgreSQL serves projects / skills / experience and the contact form, with tests.
@@ -25,7 +24,7 @@ They studied project.fahimweb.online with REA (findings: `reports/Portfolio site
 ## Goals / non-goals / anti-goals
 
 - **Goals:**
-  - a stunning but fast anime/manga-styled site;
+  - a striking but fast ASCII-3D site;
   - the agent-build intro;
   - real data from FastAPI + PG;
   - resume download and a contact form;
@@ -44,31 +43,41 @@ They studied project.fahimweb.online with REA (findings: `reports/Portfolio site
   - a blank page when the free-tier API is cold;
   - unskippable motion, or ignoring reduced-motion settings.
 
-## Milestone 0: visual exploration (throwaway spike, first step after approval)
+## Visual direction (decided): ASCII 3D, "printed terminal"
 
-Claude builds **3 short animated mockups** as private Artifact pages the user can open on a phone and a laptop. Each mockup covers:
-- a hero;
-- one transition into a projects section;
-- one project card with a hover or tap interaction.
+The exploration spike is done; its throwaway mockups stay out of the repo. Chosen: style 18 from gallery 3.
 
-All three use the same placeholder content and an original visual language:
+**Design tokens**
+- Paper `#ece6d8` (background).
+- Ink `#141414` (text and ASCII).
+- Signal red `#d4361b`, used only for the brightest ASCII characters, primary actions and focus.
+- Muted ink `#5b574f` for secondary text, and rule lines `#c9c1b0`.
+- Type: **JetBrains Mono** everywhere: 800 for display, 400/600 for body. Body is 16–17px.
+- No gradients, no shadows; 2px ink borders; box-drawing characters (`┌─┐│└┘`) for frames and dividers.
 
-1. **"Opening sequence"**
-   - The page plays like an anime opening: kinetic title cards slam in, with impact frames (a 1–2 frame inverted flash), speed lines and smash-cut section changes on scroll.
-   - Palette: ink black, paper white, and one vermilion "hanko seal" accent.
-2. **"Manga chapter"**
-   - The site reads like a manga chapter: panel grid, screentone shading, ink outlines, caption boxes.
-   - Scrolling moves panel to panel. Projects are chapters, and hover pops a panel with speed lines.
-   - Black and white plus one spot colour.
-3. **"Ink & blade"**
-   - Cinematic sumi-e: SVG brush strokes draw themselves, ink bleeds into a paper texture, and a diagonal "blade slash" reveals the next section.
-   - Vertical type accents, and a red hanko seal with the user's initials as the logo.
+**Hero:** a live ASCII-rendered 3D torus knot in a 2D canvas.
+- About 19,200 surface points are projected per frame into a character grid with a z-buffer, then shaded with the ramp ` .,-~:;=!*#$@`.
+- The two brightest levels are drawn in red.
+- Drag to spin it; otherwise it rotates slowly.
 
-The user picks one, or a mix. The winner becomes the design tokens: colours, fonts, motion rules and how the intro is restyled. All spike code is then deleted.
+**Hero performance**
+- Pause the render when it's off screen (IntersectionObserver).
+- Cap the pixel ratio at 2.
+- Low-tier devices use about 8,000 points.
+- An FPS watchdog halves the points if the frame rate stays under 45 fps for 2 seconds.
+- `prefers-reduced-motion` draws one static frame.
 
-Fonts are picked from Google Fonts during the spike. Candidates:
-- Japanese display: Dela Gothic One, Shippori Mincho, Yuji Syuku;
-- Latin: a strong condensed display face plus a clean text face.
+**Rest of the site:** the printed-terminal look.
+- Section headers look like shell prompts, e.g. `$ ls projects/`.
+- Projects are box-drawn cards.
+- Skills and experience are monospace tables.
+- Contact is a form that echoes its input like a terminal.
+
+**Intro restyle:** the agent-build mechanic stays the same (see below), drawn in ASCII.
+- Agents are block or caret cursors (`█`, `▌`, `|`) in ink, with a few in red.
+- Element frames are box-drawing outlines with a live `W×H` label.
+- Text is revealed as typing behind a blinking block cursor.
+- The HUD is a one-line status bar: `[agents 18] [built 42/180] [build] [1x] [skip]`.
 
 ## Architecture (monorepo in this repo, `Katen-Kyokotsu`)
 
@@ -85,7 +94,7 @@ backend/            FastAPI app (Python 3.12)
   tests/              pytest + httpx AsyncClient on real Postgres
 frontend/           React 19 + Vite 8 + TypeScript
   src/agent-build/    framework-free intro engine (TS, zero deps)
-  src/theme/          tokens from the chosen mockup
+  src/theme/          design tokens (paper, ink, red, JetBrains Mono)
   src/components/ src/sections/   Hero, Projects, Skills, Experience, Contact
   src/api/            typed client + TanStack Query hooks
   src/fallback/       build-time JSON snapshot of seed data
@@ -117,7 +126,7 @@ docs/superpowers/specs/   design doc (committed after approval)
   - pytest 9
   - ruff
 
-Animation uses SVG, CSS and Motion first. WebGL is only added if the chosen mockup truly needs it, and then it is lazy-loaded, its pixel ratio capped and its quality adaptive, following the reference's 3D tricks.
+Animation uses canvas 2D (the ASCII hero) plus CSS and Motion. There is no WebGL; the hero is lazy-started, its pixel ratio capped and its quality adaptive, following the reference's performance tricks.
 
 ## Backend
 
@@ -150,7 +159,7 @@ Animation uses SVG, CSS and Motion first. WebGL is only added if the chosen mock
 - Seed script for content.
 - Tests cover filters, validation, rate limit, honeypot and health.
 
-## Frontend (final look comes from Milestone 0)
+## Frontend (ASCII 3D, printed terminal)
 
 - **Sections:** Hero (name, role, CTAs: resume + GitHub), Projects (filter by tag, expandable detail), Skills, Experience/Education, Contact form.
   - A footer "Replay the build" link replays the intro.
@@ -166,7 +175,7 @@ Animation uses SVG, CSS and Motion first. WebGL is only added if the chosen mock
 
 ## Agent-build intro (`frontend/src/agent-build/`)
 
-This is the clean-room mechanic, restyled to the chosen theme (for example, agents as ink brushes or inkers, frames as panel borders). The behaviour follows the REA findings.
+This is the clean-room mechanic, restyled in ASCII (see Visual direction). The behaviour follows the REA findings.
 
 - **Gate:**
   - Skipped when any of these hold:
@@ -208,11 +217,11 @@ This is the clean-room mechanic, restyled to the chosen theme (for example, agen
 
 ## Milestones (each ends with an explanation + 2–3 interview questions)
 
-0. **Visual exploration:** 3 animated mockups. The user picks, then the tokens are locked.
+0. **Visual exploration:** done. ASCII 3D chosen; tokens above.
 1. **Backend:** models, migrations, seed (with the user's college projects), endpoints, tests, docker-compose.
 2. **Frontend shell:** theme tokens, sections, API hooks, fallback JSON, Plain view.
 3. **Agent-build engine:** unit tests, overlay and HUD, integration, Playwright tests.
-4. **Signature animations** from the chosen mockup, contact flow, 404, accessibility and performance pass.
+4. **ASCII hero renderer** (adaptive quality), contact flow, 404, accessibility and performance pass.
 5. **CI and deploy:**
    - GitHub Actions: ruff + pytest with a Postgres service; tsc + vitest + build + Playwright smoke test.
    - Deploy targets: frontend on Vercel, API on Render, database on Neon.
@@ -226,11 +235,10 @@ This is the clean-room mechanic, restyled to the chosen theme (for example, agen
 - skills;
 - GitHub and LinkedIn URLs;
 - `resume.pdf`;
-- optionally, initials for the hanko-seal logo.
 
 ## Verification
 
-- **Milestone 0:** the user opens all 3 Artifact mockups on a phone and a laptop and picks one. Claude checks each at 1440×900 and on an iPhone profile.
+- **Milestone 0:** done. The user chose style 18 (ASCII 3D).
 - **Backend:**
   - `docker compose up -d db && pytest` covers filters, 422 on unknown tags, contact validation, honeypot, rate limit and health.
   - Manual `curl` against the endpoints.
@@ -255,7 +263,7 @@ This is the clean-room mechanic, restyled to the chosen theme (for example, agen
 - **React SPA + separate FastAPI (chosen by the user):** more frontend skill shown; costs CORS and two deploys.
 - **FastAPI + Jinja:** one deploy and mostly Python; not chosen.
 - **Astro + FastAPI:** not chosen.
-- **Visual concepts rejected by the user:** minimal, terminal, editorial, living database, request lifecycle, spec sheet, blueprint, comic ink, web threads. Spider-Man was ruled out on IP grounds.
+- **Visual concepts explored:** 3 anime mockups and 22 gallery styles. ASCII 3D won. Spider-Man was ruled out on IP grounds.
 
 ## Left to the builder
 
