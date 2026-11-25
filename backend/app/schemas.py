@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class _FromOrm(BaseModel):
@@ -48,3 +48,17 @@ class ExperienceOut(_FromOrm):
     start: date
     end: date | None
     highlights: list[str]
+
+
+class ContactIn(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    name: str = Field(min_length=1, max_length=100)
+    email: EmailStr
+    message: str = Field(min_length=10, max_length=2000)
+    # Honeypot: hidden in the real form, so only bots fill it in.
+    website: str = Field(default="", max_length=300)
+
+
+class ContactAccepted(BaseModel):
+    status: Literal["received"]
