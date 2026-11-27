@@ -16,6 +16,8 @@ export default defineConfig({
     command: "npm run build && npm run preview -- --port 4173 --strictPort",
     url: "http://localhost:4173",
     reuseExistingServer: !process.env.CI,
+    // The smoke tests need live data, so the build must know where the API is.
+    env: { VITE_API_URL: process.env.VITE_API_URL || "http://localhost:8000" },
     timeout: 120_000,
   },
   projects: [

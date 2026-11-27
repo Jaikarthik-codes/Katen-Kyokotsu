@@ -17,7 +17,9 @@ npm run dev              # http://localhost:5173
 
 | Variable | Meaning |
 |---|---|
-| `VITE_API_URL` | Base URL of the API (default `http://localhost:8000`). Read at build time |
+| `VITE_API_URL` | Base URL of the API. Read at build time. In development it defaults to `http://localhost:8000` |
+
+A production build **without** `VITE_API_URL` never calls an API and shows the bundled copy only, with the header reading `○ offline copy`. This stops a deployed site from calling the visitor's own computer, which would make browsers show a local-network permission prompt. Set `VITE_API_URL` in your host's build settings once the API is deployed.
 
 The API must list this site's origin in its `CORS_ORIGINS`:
 - `http://localhost:5173` for `npm run dev`;
