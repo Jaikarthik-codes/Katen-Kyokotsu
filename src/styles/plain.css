@@ -1,0 +1,108 @@
+/* Plain view: the same content as a quiet, scannable, printable page.
+   Toggled by html[data-view="plain"]; print uses it too. */
+html[data-view='plain'] {
+  scroll-behavior: auto;
+}
+
+html[data-view='plain'] body {
+  font-size: 1rem;
+}
+
+html[data-view='plain'] .hero {
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: 2.5rem;
+}
+
+html[data-view='plain'] .hero h1 {
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+html[data-view='plain'] .lead {
+  max-width: 60ch;
+  margin-top: 0.75rem;
+  font-size: 1.125rem;
+}
+
+html[data-view='plain'] .api-card,
+html[data-view='plain'] .status-dot,
+html[data-view='plain'] #replay,
+html[data-view='plain'] #replay + span {
+  display: none;
+}
+
+html[data-view='plain'] .section {
+  padding-block: 2rem;
+}
+
+html[data-view='plain'] .section-head {
+  margin-bottom: 1rem;
+}
+
+html[data-view='plain'] .section h2 {
+  font-size: 1.5rem;
+}
+
+html[data-view='plain'] .project-grid,
+html[data-view='plain'] .skill-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+html[data-view='plain'] .project-card,
+html[data-view='plain'] .skill-group,
+html[data-view='plain'] .timeline-item {
+  padding: 0.9rem 1rem;
+  background: transparent;
+}
+
+html[data-view='plain'] * {
+  transition: none !important;
+}
+
+@media print {
+  .site-header,
+  .skip-link,
+  .api-card,
+  .cta-row,
+  .footer-actions,
+  .ab-overlay,
+  .ab-hud,
+  .ab-toast {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  .hero,
+  .section {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 1rem;
+    border: 0;
+  }
+
+  .hero h1 {
+    font-size: 24pt;
+  }
+
+  .project-grid,
+  .skill-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project-card,
+  .skill-group,
+  .timeline-item {
+    break-inside: avoid;
+    background: none;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+  }
+}

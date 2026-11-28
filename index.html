@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jai Karthik · Python backend developer</title>
+    <meta
+      name="description"
+      content="Jai Karthik, Python backend developer working with FastAPI, PostgreSQL and AI integration. A pool of agents builds this page in front of you."
+    />
+    <meta name="theme-color" content="#f3f0e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Jai Karthik · Python backend developer" />
+    <meta
+      property="og:description"
+      content="FastAPI, PostgreSQL and AI integration. Watch a job queue of agents build this page."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main" data-ab-skip>Skip to content</a>
+
+    <div id="app">
+      <header class="site-header" data-ab="box" data-ab-fixed>
+        <div class="container header-row">
+          <a class="brand" href="#top" aria-label="Jai Karthik, back to top">
+            <span class="brand-mark" data-ab="box" aria-hidden="true">JK</span>
+            <span class="brand-name">Jai Karthik</span>
+          </a>
+          <nav class="site-nav" aria-label="Sections">
+            <a href="#projects">Projects</a>
+            <a href="#skills">Skills</a>
+            <a href="#experience">Experience</a>
+            <a href="#contact">Contact</a>
+          </nav>
+          <div class="header-actions">
+            <button
+              type="button"
+              class="btn btn-ghost btn-small"
+              id="plain-toggle"
+              aria-pressed="false"
+              data-ab="box"
+            >
+              Plain view
+            </button>
+            <!-- TODO(content): add public/resume.pdf -->
+            <a class="btn btn-ink btn-small" href="/resume.pdf" data-ab="box">Resume</a>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="hero container" id="top" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span class="status-dot" aria-hidden="true"></span>Open to backend roles · India
+            </p>
+            <h1 id="hero-title">Jai Karthik</h1>
+            <p class="lead">
+              Python backend developer. I build APIs, databases and AI features with FastAPI and
+              PostgreSQL.
+            </p>
+            <div class="cta-row">
+              <a class="btn btn-ink" href="#projects" data-ab="box">See my projects</a>
+              <a class="btn btn-ghost" href="/resume.pdf" data-ab="box">Download resume</a>
+              <a
+                class="btn btn-ghost"
+                href="https://github.com/Jaikarthik-codes"
+                rel="noopener"
+                data-ab="box"
+                >GitHub ↗</a
+              >
+            </div>
+          </div>
+
+          <figure class="api-card" data-ab="box">
+            <figcaption class="api-card-bar">
+              <span class="api-method">GET</span> /api/v1/me
+              <span class="api-status">200 OK</span>
+            </figcaption>
+            <pre class="api-card-body" aria-label="A JSON response describing Jai Karthik"><code>{
+  <span class="k">"name"</span>: <span class="s">"Jai Karthik"</span>,
+  <span class="k">"role"</span>: <span class="s">"Backend developer"</span>,
+  <span class="k">"stack"</span>: [<span class="s">"Python"</span>, <span class="s">"FastAPI"</span>, <span class="s">"PostgreSQL"</span>],
+  <span class="k">"learning"</span>: [<span class="s">"LLM APIs"</span>, <span class="s">"RAG"</span>],
+  <span class="k">"open_to_work"</span>: <span class="b">true</span>
+}</code></pre>
+          </figure>
+        </section>
+
+        <section class="section container" id="projects" aria-labelledby="projects-title">
+          <header class="section-head">
+            <p class="section-label">01 / projects</p>
+            <h2 id="projects-title">Projects</h2>
+            <p class="section-intro">Things I built, with the code to back them up.</p>
+          </header>
+
+          <div class="project-grid">
+            <article class="project-card" data-ab="box">
+              <div class="project-top">
+                <h3>Agent-build portfolio</h3>
+                <span class="badge" data-ab="box">you're on it</span>
+              </div>
+              <p>
+                This site. Every part of the page is a job in a queue. The nearest free agent takes
+                the next job, and a card is always built before its text, like dependent tasks in
+                Celery.
+              </p>
+              <ul class="chips" aria-label="Tech stack">
+                <li class="chip" data-ab="box">TypeScript</li>
+                <li class="chip" data-ab="box">Vite</li>
+                <li class="chip" data-ab="box">Vitest</li>
+                <li class="chip" data-ab="box">Playwright</li>
+              </ul>
+              <p class="project-links">
+                <a href="https://github.com/Jaikarthik-codes/Katen-Kyokotsu" rel="noopener"
+                  >Code ↗</a
+                >
+              </p>
+            </article>
+
+            <!-- TODO(content): replace with your final-year project -->
+            <article class="project-card" data-ab="box">
+              <div class="project-top">
+                <h3>Final-year project</h3>
+                <span class="badge badge-todo" data-ab="box">details coming</span>
+              </div>
+              <p>
+                Placeholder. One or two lines on what it does, who it is for, and the result you can
+                measure.
+              </p>
+              <ul class="chips" aria-label="Tech stack">
+                <li class="chip" data-ab="box">Python</li>
+                <li class="chip" data-ab="box">PostgreSQL</li>
+              </ul>
+              <p class="project-links"><a href="https://github.com/Jaikarthik-codes">Code ↗</a></p>
+            </article>
+
+            <!-- TODO(content): replace with your next FastAPI + AI project -->
+            <article class="project-card" data-ab="box">
+              <div class="project-top">
+                <h3>FastAPI + AI project</h3>
+                <span class="badge badge-todo" data-ab="box">in progress</span>
+              </div>
+              <p>
+                Placeholder. A FastAPI service with an AI feature, tests, Docker and a live demo
+                link.
+              </p>
+              <ul class="chips" aria-label="Tech stack">
+                <li class="chip" data-ab="box">FastAPI</li>
+                <li class="chip" data-ab="box">PostgreSQL</li>
+                <li class="chip" data-ab="box">LLM API</li>
+              </ul>
+              <p class="project-links"><a href="https://github.com/Jaikarthik-codes">Code ↗</a></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section container" id="skills" aria-labelledby="skills-title">
+          <header class="section-head">
+            <p class="section-label">02 / skills</p>
+            <h2 id="skills-title">Skills</h2>
+            <p class="section-intro">What I use today, and what I am learning now.</p>
+          </header>
+
+          <div class="skill-grid">
+            <div class="skill-group" data-ab="box">
+              <h3>Backend</h3>
+              <ul class="chips">
+                <li class="chip" data-ab="box">Python</li>
+                <li class="chip" data-ab="box">FastAPI</li>
+                <li class="chip" data-ab="box">REST APIs</li>
+              </ul>
+            </div>
+            <div class="skill-group" data-ab="box">
+              <h3>Data</h3>
+              <ul class="chips">
+                <li class="chip" data-ab="box">PostgreSQL</li>
+                <li class="chip" data-ab="box">SQL</li>
+              </ul>
+            </div>
+            <div class="skill-group" data-ab="box">
+              <h3>Tools</h3>
+              <ul class="chips">
+                <li class="chip" data-ab="box">Git</li>
+                <li class="chip" data-ab="box">GitHub</li>
+              </ul>
+            </div>
+            <div class="skill-group" data-ab="box">
+              <h3>Learning now</h3>
+              <ul class="chips">
+                <li class="chip" data-ab="box">AI integration</li>
+                <li class="chip" data-ab="box">LLM APIs</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section container" id="experience" aria-labelledby="experience-title">
+          <header class="section-head">
+            <p class="section-label">03 / experience</p>
+            <h2 id="experience-title">Education</h2>
+          </header>
+
+          <ol class="timeline">
+            <!-- TODO(content): add your college, branch and highlights -->
+            <li class="timeline-item" data-ab="box">
+              <p class="timeline-when">2026 graduate</p>
+              <h3>B.Tech</h3>
+              <p>College name and branch. Add your final-year project and one highlight here.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section class="section container" id="contact" aria-labelledby="contact-title">
+          <header class="section-head">
+            <p class="section-label">04 / contact</p>
+            <h2 id="contact-title">Let's talk</h2>
+            <p class="section-intro">
+              I am looking for a backend role where I can ship APIs and AI features. Email is the
+              fastest way to reach me.
+            </p>
+          </header>
+          <div class="contact-row">
+            <!-- TODO(content): your email and LinkedIn URL -->
+            <a class="btn btn-ink" href="mailto:you@example.com" data-ab="box">Email me</a>
+            <a
+              class="btn btn-ghost"
+              href="https://github.com/Jaikarthik-codes"
+              rel="noopener"
+              data-ab="box"
+              >GitHub</a
+            >
+            <a
+              class="btn btn-ghost"
+              href="https://www.linkedin.com/in/your-profile"
+              rel="noopener"
+              data-ab="box"
+              >LinkedIn</a
+            >
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-row">
+          <p>Built in your browser by a queue of agents. They are a scheduler, not AI.</p>
+          <p class="footer-actions">
+            <button type="button" class="link-button" id="replay">Replay the build</button>
+            <span aria-hidden="true">·</span>
+            <a href="https://github.com/Jaikarthik-codes/Katen-Kyokotsu" rel="noopener">Source</a>
+          </p>
+          <p class="credit">
+            The intro idea comes from project.fahimweb.online, rebuilt from scratch.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

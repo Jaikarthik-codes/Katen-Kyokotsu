@@ -1,0 +1,61 @@
+/* Design tokens. Flat paper and ink: no gradients, no shadows. The only bright
+   colours on the page belong to the agents. */
+:root {
+  color-scheme: light dark;
+
+  --paper: #f3f0e8;
+  --surface: #f9f7f2;
+  --hover: #e8e3d6;
+  --ink: #17171a;
+  --ink-muted: #57554f;
+  --rule: #d6d0c2;
+  --focus: #c2410c;
+  --ok: #2f9e44;
+  --code-string: #2b6a3e;
+  --code-bool: #b4380b;
+
+  /* Agent colours: dark enough for white label text on a light page. */
+  --agent-1: #ce2c31;
+  --agent-2: #3a5bc7;
+  --agent-3: #18794e;
+  --agent-4: #bd4b00;
+  --agent-5: #8145b5;
+  --agent-6: #067a6f;
+  --agent-7: #c2298a;
+  --agent-label: #ffffff;
+
+  --font-sans:
+    'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --container: 72rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --header-h: 4rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #131312;
+    --surface: #1a1a18;
+    --hover: #262623;
+    --ink: #ecebe5;
+    --ink-muted: #a8a59b;
+    --rule: #34332e;
+    --focus: #ff8a4c;
+    --ok: #51cf66;
+    --code-string: #8fd19e;
+    --code-bool: #ff9b66;
+
+    --agent-1: #ff6369;
+    --agent-2: #7b9bff;
+    --agent-3: #3dd68c;
+    --agent-4: #ff8b3e;
+    --agent-5: #bf8cf2;
+    --agent-6: #2fc6b5;
+    --agent-7: #f472c3;
+    --agent-label: #111110;
+  }
+}
